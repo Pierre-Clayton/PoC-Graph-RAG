@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+neo4j
+openai
+pandas
+matplotlib
+networkx
+python-multipart
+langchain-neo4j
+python-dotenv
