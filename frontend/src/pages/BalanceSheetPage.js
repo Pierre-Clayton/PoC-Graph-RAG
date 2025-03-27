@@ -1,9 +1,10 @@
+// frontend/src/pages/BalanceSheetPage.js
 import React, { useState } from "react";
 import axios from "axios";
 
 const BalanceSheetPage = () => {
-  const [prompt, setPrompt] = useState("Enter the prompt to generate the balance sheet or click on the button below to use the one by default...");
   const [balanceData, setBalanceData] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const backendBaseUrl = "http://localhost:8000";
 
@@ -16,18 +17,43 @@ const BalanceSheetPage = () => {
     }
   };
 
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
+  const uploadCSV = async () => {
+    if (!selectedFile) {
+      alert("Please select a CSV file first.");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    try {
+      const res = await axios.post(`${backendBaseUrl}/upload-balance-sheet`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setBalanceData(res.data);
+    } catch (err) {
+      console.error(err);
+      alert("Error uploading the CSV file.");
+    }
+  };
+
   return (
     <div>
-      <h1>Generate Balance Sheet Data</h1>
+      <h1>Detailed Balance Sheet Data</h1>
       <div style={{ marginBottom: "20px" }}>
-        <textarea
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          rows="4"
-          style={{ width: "100%", padding: "10px" }}
-        />
-        <button onClick={fetchBalanceSheetData} style={{ marginTop: "10px" }}>
-          Generate Balance Sheet
+        <button onClick={fetchBalanceSheetData}>
+          Generate Default Balance Sheet
+        </button>
+      </div>
+      <div style={{ marginBottom: "20px" }}>
+        <h3>Or Upload Your Own CSV File</h3>
+        <input type="file" accept=".csv" onChange={handleFileChange} />
+        <button onClick={uploadCSV} style={{ marginLeft: "10px" }}>
+          Upload CSV
         </button>
       </div>
       {balanceData && (
@@ -37,7 +63,14 @@ const BalanceSheetPage = () => {
             <thead>
               <tr>
                 {balanceData.columns.map((col, index) => (
-                  <th key={index} style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f2f2f2" }}>
+                  <th
+                    key={index}
+                    style={{
+                      border: "1px solid #ddd",
+                      padding: "8px",
+                      backgroundColor: "#f2f2f2",
+                    }}
+                  >
                     {col}
                   </th>
                 ))}
