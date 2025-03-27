@@ -15,9 +15,9 @@ const ChatBox = ({ endpoint }) => {
     setMessages((prev) => [...prev, userMessage]);
 
     try {
-      // Pour la démonstration, les endpoints ne reçoivent pas de question,
-      // nous appelons simplement l’API et affichons la réponse.
-      const res = await axios.post(`${backendBaseUrl}/${endpoint}`);
+      // Envoyer la question dans le payload de la requête POST
+      const res = await axios.post(`${backendBaseUrl}/${endpoint}`, { question: input });
+      // Récupérer la réponse en fonction de l'endpoint appelé
       const responseText =
         res.data[endpoint] || res.data.classic_analysis || res.data.graph_analysis;
       const botMessage = { sender: "Bot", text: responseText };
