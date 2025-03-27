@@ -11,8 +11,11 @@ from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from neo4j import GraphDatabase
 from openai import OpenAI
+from dotenv import load_dotenv
 
 app = FastAPI()
+
+load_dotenv()
 
 # --- CORS configuration ---
 origins = [
