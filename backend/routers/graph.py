@@ -1,20 +1,12 @@
-import io
+# backend/routers/graph.py
 import json
-import re
-import networkx as nx
-import matplotlib.pyplot as plt
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse
 from backend.config import driver
-from backend.services.graph_service import (
-    get_graph_relationships,
-    generate_graph_json_data
-)
-from openai import OpenAI
+from backend.services.graph_service import generate_graph_json_data
 import os
 
 router = APIRouter()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @router.post("/generate-graph-json", response_class=JSONResponse)
 def generate_graph_json():
@@ -85,41 +77,34 @@ def insert_graph():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error inserting graph: {e}")
 
-@router.get("/visualize-graph", response_class=StreamingResponse)
+# --- New visualization endpoint ---
+@router.get("/visualize-graph", response_class=JSONResponse)
 def visualize_graph():
-    query = "MATCH (n)-[r]->(m) RETURN n, r, m"
-    G = nx.DiGraph()
+    """
+    Instead of returning a static image, this endpoint returns the graph in a JSON format 
+    suitable for interactive front-end visualization (e.g., using Cytoscape.js).
+    """
     try:
-        with driver.session() as session:
-            results = session.run(query)
-            for record in results:
-                n1 = record["n"]
-                n2 = record["m"]
-                id1 = n1.get("id") or f"node_{id(n1)}"
-                id2 = n2.get("id") or f"node_{id(n2)}"
-                label1 = list(n1.labels)[0] if n1.labels else "Unknown"
-                label2 = list(n2.labels)[0] if n2.labels else "Unknown"
-                name1 = n1.get("name", "")
-                name2 = n2.get("name", "")
-                G.add_node(id1, label=label1, name=name1)
-                G.add_node(id2, label=label2, name=name2)
-                rel = record["r"]
-                rel_type = rel.type
-                G.add_edge(id1, id2, label=rel_type)
+        # Generate the graph JSON using the same function that builds your knowledge graph
+        graph_data = generate_graph_json_data()
+        
+        # Convert the generated JSON to a format with nodes and edges arrays.
+        nodes = graph_data.get("nodes", [])
+        # Map relationships to edges. You can include additional properties if needed.
+        edges = []
+        for rel in graph_data.get("relationships", []):
+            # Ensure the relationship has source and target fields.
+            if "source" in rel and "target" in rel:
+                edges.append({
+                    "data": {
+                        "source": rel["source"],
+                        "target": rel["target"],
+                        "label": rel["type"],
+                        **({ "period": rel["period"], "value": rel["value"] } if rel.get("type") == "HAS_VALUE" else {}),
+                        **({ "role": rel["role"] } if rel.get("type") == "EQUATION" and rel.get("role") is not None else {})
+                    }
+                })
+        # Return the nodes and edges in a structure friendly for interactive libraries.
+        return {"nodes": nodes, "edges": edges}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error querying graph: {e}")
-    
-    pos = nx.spring_layout(G, seed=42)
-    fig, ax = plt.subplots(figsize=(12, 8))
-    node_labels = {node: f"{data['label']}:\n{data['name']}" for node, data in G.nodes(data=True)}
-    nx.draw(G, pos, with_labels=True, labels=node_labels, node_color="lightblue", node_size=1500, font_size=8, ax=ax)
-    edge_labels = nx.get_edge_attributes(G, "label")
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_color="red", font_size=8, ax=ax)
-    ax.set_title("Knowledge Graph Visualization")
-    plt.tight_layout()
-    
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png")
-    plt.close(fig)
-    buf.seek(0)
-    return StreamingResponse(buf, media_type="image/png")
+        raise HTTPException(status_code=500, detail=f"Error visualizing graph: {e}")
