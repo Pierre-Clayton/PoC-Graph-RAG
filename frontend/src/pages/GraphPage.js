@@ -28,9 +28,9 @@ const GraphPage = () => {
 
   return (
     <div>
-      <h1>Schéma JSON et Visualisation du Graph</h1>
+      <h1>JSON Schema and Graph Visualization</h1>
       <div style={{ marginBottom: "20px" }}>
-        <button onClick={generateGraphJson}>Générer JSON du Graph</button>
+        <button onClick={generateGraphJson}>Generate Graph JSON</button>
         {graphJson && (
           <pre style={{ backgroundColor: "#f4f4f4", padding: "10px", overflow: "auto", marginTop: "10px" }}>
             {graphJson}
@@ -38,10 +38,10 @@ const GraphPage = () => {
         )}
       </div>
       <div>
-        <button onClick={getGraphVisualization}>Visualiser le Graph</button>
+        <button onClick={getGraphVisualization}>Visualize Graph</button>
         {graphImage && (
           <div style={{ marginTop: "10px" }}>
-            <h3>Visualisation du Graph</h3>
+            <h3>Graph Visualization</h3>
             <img src={graphImage} alt="Graph Visualization" style={{ maxWidth: "100%", border: "1px solid #ccc" }} />
           </div>
         )}

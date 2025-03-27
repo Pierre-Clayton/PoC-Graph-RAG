@@ -5,18 +5,18 @@ import ChatBox from "../components/ChatBox";
 const ChatPage = () => {
   return (
     <div>
-      <h1>Chat Interactif sur les Données Financières</h1>
+      <h1>Interactive Financial Data Chat</h1>
       <p>
-        Posez vos questions sur les données de bilan. À gauche, obtenez une analyse classique ;
-        à droite, une analyse basée sur le graph.
+        Ask your questions about the balance sheet data. On the left, get a classic analysis;
+        on the right, a graph-based analysis.
       </p>
       <div style={{ display: "flex", gap: "20px" }}>
         <div style={{ flex: 1, border: "1px solid #ccc", padding: "10px", borderRadius: "4px" }}>
-          <h3>Analyse Classique</h3>
+          <h3>Classic Analysis</h3>
           <ChatBox endpoint="classic-analysis" />
         </div>
         <div style={{ flex: 1, border: "1px solid #ccc", padding: "10px", borderRadius: "4px" }}>
-          <h3>Analyse Graph</h3>
+          <h3>Graph Analysis</h3>
           <ChatBox endpoint="graph-analysis" />
         </div>
       </div>

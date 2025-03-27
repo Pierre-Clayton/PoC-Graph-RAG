@@ -4,13 +4,12 @@ import React from "react";
 const HomePage = () => {
   return (
     <div>
-      <h1>Bienvenue sur Financial Knowledge Graph App</h1>
+      <h1>Welcome to Financial Knowledge Graph App</h1>
       <p>
-        Ce projet permet de générer, visualiser et analyser un graph de connaissance
-        basé sur les données de bilan de BNP Paribas. L'application utilise une API FastAPI
-        pour générer des données financières, créer un graph via OpenAI, et insérer ce graph dans Neo4j.
+        This project allows you to generate, visualize, and analyze a knowledge graph based on BNP Paribas balance sheet data.
+        The application uses a FastAPI API to generate financial data, create a graph using OpenAI, and insert this graph into Neo4j.
       </p>
-      <h2>Références</h2>
+      <h2>References</h2>
       <ul>
         <li>
           <a href="https://neo4j.com/" target="_blank" rel="noopener noreferrer">

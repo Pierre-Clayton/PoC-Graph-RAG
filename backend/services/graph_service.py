@@ -5,12 +5,12 @@ from backend.config import driver, OPENAI_API_KEY
 from openai import OpenAI
 import os
 
-# Initialisation du client OpenAI
+# Initialize the OpenAI client
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 def get_graph_relationships():
     """
-    Interroge Neo4j pour récupérer toutes les relations du graphe.
+    Queries Neo4j to retrieve all relationships in the graph.
     """
     query = "MATCH (n)-[r]->(m) RETURN n, r, m"
     relationships = []
@@ -35,7 +35,7 @@ def get_graph_relationships():
 
 def compute_graph_metrics():
     """
-    Calcule quelques métriques du graphe, par exemple la densité et les nœuds les plus centraux.
+    Computes graph metrics, for example density and the most central nodes.
     """
     query = "MATCH (n)-[r]->(m) RETURN n, r, m"
     G = nx.DiGraph()
@@ -62,7 +62,7 @@ def compute_graph_metrics():
     try:
         metrics["density"] = nx.density(G)
         centrality = nx.degree_centrality(G)
-        # Sélectionner les 3 nœuds les plus centraux
+        # Select the top 3 most central nodes
         top_nodes = sorted(centrality.items(), key=lambda x: x[1], reverse=True)[:3]
         metrics["top_central_nodes"] = top_nodes
     except Exception as e:
@@ -71,8 +71,8 @@ def compute_graph_metrics():
 
 def get_relevant_subgraph(question: str):
     """
-    Retourne uniquement les relations dont le type, la source ou la cible
-    contiennent des mots correspondant à la question.
+    Returns only those relationships where the type, source, or target
+    contains words matching the question.
     """
     relationships = get_graph_relationships()
     relevant = []
@@ -86,10 +86,10 @@ def get_relevant_subgraph(question: str):
 
 def summarize_graph_insights(insights, metrics):
     """
-    Construit un résumé concis des insights du graphe et des métriques via OpenAI.
+    Constructs a concise summary of graph insights and metrics via OpenAI.
     """
     summary_prompt = f"""
-You are a financial data summarization expert. Summarize the following graph insights and metrics into a concise summary in French.
+You are a financial data summarization expert. Summarize the following graph insights and metrics into a concise summary in English, formatted in Markdown.
 
 Graph Insights:
 {json.dumps(insights, indent=2, ensure_ascii=False)}
@@ -109,12 +109,12 @@ Provide a concise summary highlighting key findings such as important relationsh
         )
         summary = response.choices[0].message.content
     except Exception as e:
-        summary = "Impossible de synthétiser les insights du graphe."
+        summary = "Unable to summarize the graph insights."
     return summary
 
 def generate_graph_json_data():
     """
-    Génère le JSON du graphe via OpenAI à partir des données de bilan.
+    Generates the graph JSON via OpenAI based on balance sheet data.
     """
     from backend.services.balance_sheet import get_balance_sheet_data
     df = get_balance_sheet_data()
@@ -161,10 +161,10 @@ Respond only with the JSON.
             try:
                 return json.loads(json_str)
             except json.JSONDecodeError as e:
-                print("Erreur de décodage JSON:", e)
+                print("JSON decode error:", e)
                 raise e
         else:
-            raise ValueError("Aucun bloc JSON trouvé dans la réponse.")
+            raise ValueError("No JSON block found in the response.")
     try:
         response = client.chat.completions.create(
             model="gpt-4o",

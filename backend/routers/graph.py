@@ -34,14 +34,14 @@ def insert_graph():
     try:
         with driver.session() as session:
             with session.begin_transaction() as tx:
-                # Supprimer tous les nœuds et relations existants
+                # Delete all existing nodes and relationships
                 tx.run("MATCH (n) DETACH DELETE n")
-                # Insertion des nœuds
+                # Insert nodes
                 for node in graph_data.get("nodes", []):
                     cypher_node = f"MERGE (n:{node['label']} {{id: $id}}) SET n.name = $name"
                     params_node = {"id": node["id"], "name": node["name"]}
                     tx.run(cypher_node, params_node)
-                # Insertion des relations
+                # Insert relationships
                 for rel in graph_data.get("relationships", []):
                     if "source" not in rel or "target" not in rel:
                         continue
@@ -81,7 +81,7 @@ def insert_graph():
                         """
                     tx.run(cypher_rel, params_rel)
                 tx.commit()
-        return {"status": "Graph inséré dans Neo4j avec succès."}
+        return {"status": "Graph successfully inserted into Neo4j."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error inserting graph: {e}")
 

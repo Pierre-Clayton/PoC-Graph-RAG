@@ -17,15 +17,16 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 def classic_analysis(payload: dict = Body(...)):
     question = payload.get("question", "")
     df = get_balance_sheet_data()
-    csv_text = df.to_csv(index=False)
+    md_table = df.to_markdown(index=False)
     prompt = f"""
 Based on the following balance sheet data for BNP Paribas, please answer the following question:
-{question}
 
-Data:
-{csv_text}
+Question: {question}
 
-Provide a clear, professional summary.
+Data (in Markdown Table):
+{md_table}
+
+Provide a clear, professional summary in Markdown format. Use tables if necessary.
 """
     try:
         response = client.chat.completions.create(
@@ -48,10 +49,12 @@ def graph_analysis(payload: dict = Body(...)):
     relevant_relationships = get_relevant_subgraph(question)
     summary = summarize_graph_insights(relevant_relationships, metrics)
     prompt = f"""
-Résumé du Graphe:
+Graph Summary:
 {summary}
 
-Question posée: {question}
+Question: {question}
+
+Please provide a detailed analysis in Markdown format, using tables if necessary.
 """
     try:
         response = client.chat.completions.create(

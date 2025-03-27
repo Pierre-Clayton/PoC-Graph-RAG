@@ -7,5 +7,4 @@ router = APIRouter()
 @router.get("/balance-sheet-data", response_class=JSONResponse)
 def balance_sheet_data():
     df = get_balance_sheet_data()
-    csv_text = df.to_csv(index=False)
-    return {"csv": csv_text}
+    return {"columns": list(df.columns), "data": df.to_dict(orient="records")}
