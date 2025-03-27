@@ -19,8 +19,6 @@ def classic_analysis(payload: dict = Body(...)):
     df = get_balance_sheet_data()
     md_table = df.to_markdown(index=False)
     prompt = f"""
-Based on the following balance sheet data for BNP Paribas, please answer the following question:
-
 Question: {question}
 
 Data (in Markdown Table):
@@ -48,14 +46,11 @@ def graph_analysis(payload: dict = Body(...)):
     metrics = compute_graph_metrics()
     relevant_relationships = get_relevant_subgraph(question)
     summary = summarize_graph_insights(relevant_relationships, metrics)
-    prompt = f"""
-Graph Summary:
-{summary}
-
-Question: {question}
-
-Please provide a detailed analysis in Markdown format, using tables if necessary.
-"""
+    prompt = (
+        f"Graph Summary:\n{summary}\n\n"
+        f"Question: {question}\n\n"
+        "Please provide a detailed analysis in Markdown format, using tables if necessary."
+    )
     try:
         response = client.chat.completions.create(
             model="gpt-4o",

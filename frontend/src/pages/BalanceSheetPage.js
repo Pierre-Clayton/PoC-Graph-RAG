@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const BalanceSheetPage = () => {
-  const [prompt, setPrompt] = useState("Enter the prompt to generate the balance sheet...");
+  const [prompt, setPrompt] = useState("Enter the prompt to generate the balance sheet or click on the button below to use the one by default...");
   const [balanceData, setBalanceData] = useState(null);
 
   const backendBaseUrl = "http://localhost:8000";
