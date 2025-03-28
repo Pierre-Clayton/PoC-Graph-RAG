@@ -1,7 +1,7 @@
-// ✅ New code in GraphPage.js
 import React, { useState } from "react";
 import axios from "axios";
 import GraphVisualization from "./GraphVisualization";
+import "./GraphPage.css";
 
 const GraphPage = () => {
   const [graphData, setGraphData] = useState(null);
@@ -9,19 +9,21 @@ const GraphPage = () => {
 
   const loadGraphVisualization = async () => {
     try {
-      // No 'responseType: "blob"' here. We want JSON.
       const res = await axios.get(`${backendBaseUrl}/visualize-graph`);
-      setGraphData(res.data); 
-      // res.data is expected to have { nodes: [...], edges: [...] }
+      setGraphData(res.data);
     } catch (err) {
       console.error(err);
     }
   };
 
   return (
-    <div>
-      <h1>Interactive Graph Visualization</h1>
-      <button onClick={loadGraphVisualization}>
+    <div className="graph-page-container">
+      <h1>Graph Visualization</h1>
+      <p>
+        Explore the interactive financial knowledge graph generated from BNP Paribas' balance sheet data.
+        Click the button below to load the visualization.
+      </p>
+      <button onClick={loadGraphVisualization} className="primary-button">
         Load Graph Visualization
       </button>
       {graphData && <GraphVisualization graphData={graphData} />}

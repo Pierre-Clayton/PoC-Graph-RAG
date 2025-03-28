@@ -1,0 +1,16 @@
+.navigation {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .nav-link {
+    margin-right: 15px;
+    color: #0074D9;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .nav-link:hover {
+    text-decoration: underline;
+  }
+  

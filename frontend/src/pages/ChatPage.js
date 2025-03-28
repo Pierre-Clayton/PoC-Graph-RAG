@@ -1,21 +1,21 @@
-// frontend/src/pages/ChatPage.js
 import React from "react";
 import ChatBox from "../components/ChatBox";
+import "./ChatPage.css";
 
 const ChatPage = () => {
   return (
-    <div>
-      <h1>Interactive Financial Data Chat</h1>
-      <p>
-        Ask your questions about the balance sheet data. On the left, get a classic analysis;
-        on the right, a graph-based analysis.
+    <div className="chat-page-container">
+      <h1>Financial Data Chat</h1>
+      <p className="chat-description">
+        Engage with our interactive chat to receive both classic and graph-based analyses of the financial data.
+        Ask your questions and get insights instantly.
       </p>
-      <div style={{ display: "flex", gap: "20px" }}>
-        <div style={{ flex: 1, border: "1px solid #ccc", padding: "10px", borderRadius: "4px" }}>
+      <div className="chat-boxes">
+        <div className="chat-card">
           <h3>Classic Analysis</h3>
           <ChatBox endpoint="classic-analysis" />
         </div>
-        <div style={{ flex: 1, border: "1px solid #ccc", padding: "10px", borderRadius: "4px" }}>
+        <div className="chat-card">
           <h3>Graph Analysis</h3>
           <ChatBox endpoint="graph-analysis" />
         </div>

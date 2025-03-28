@@ -18,14 +18,11 @@ def classic_analysis(payload: dict = Body(...)):
     question = payload.get("question", "")
     df = get_balance_sheet_data()
     md_table = df.to_markdown(index=False)
-    prompt = f"""
-Question: {question}
-
-Data (in Markdown Table):
-{md_table}
-
-Provide a clear, professional summary in Markdown format. Use tables if necessary.
-"""
+    prompt = (
+        f"Question:\n{question}\n\n"
+        f"Data: {md_table}\n\n"
+        "Please provide a detailed analysis in Markdown format, using tables if necessary."
+    )
     try:
         response = client.chat.completions.create(
             model="gpt-4o",
