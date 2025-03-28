@@ -11,6 +11,7 @@ const GraphVisualization = ({ graphData }) => {
 
     const elements = [
       ...graphData.nodes.map((node) => ({
+        // On suppose ici que "node.label" contient le type (ex: "Company", "Financial Statement", etc.)
         data: { id: node.id, label: node.name, type: node.label },
       })),
       ...graphData.edges.map((edge) => ({
@@ -27,47 +28,44 @@ const GraphVisualization = ({ graphData }) => {
       container: containerRef.current,
       elements: elements,
       style: [
+        // Style générique pour les nœuds (sauf la couleur)
         {
           selector: "node",
           style: {
-            shape: "roundrectangle",
-            width: "label",
-            "min-width": "80px", // ensure a minimum width
-            height: "label",
-            "min-height": "40px", // ensure a minimum height
-            padding: "10px",
-            "text-wrap": "wrap",
-            "text-max-width": "150px",
+            label: "data(label)",
             "text-valign": "center",
-            "text-halign": "center",
             color: "#fff",
             "font-size": "10px",
+            width: "40px",
+            height: "40px",
           },
         },
+        // Style spécifique pour chaque type de nœud
         {
-          selector: 'node[type="Company"]',
+          selector: "node[type='Company']",
           style: {
             "background-color": "#0074D9",
           },
         },
         {
-          selector: 'node[type="FinancialStatement"]',
+          selector: "node[type='FinancialStatement']",
           style: {
             "background-color": "#FF4136",
           },
         },
         {
-          selector: 'node[type="FinancialItem"]',
+          selector: "node[type='FinancialItem']",
           style: {
             "background-color": "#2ECC40",
           },
         },
         {
-          selector: 'node[type="Period"]',
+          selector: "node[type='Period']",
           style: {
             "background-color": "#FF851B",
           },
         },
+        // Style des arêtes
         {
           selector: "edge",
           style: {
@@ -84,7 +82,6 @@ const GraphVisualization = ({ graphData }) => {
       ],
       layout: {
         name: "cose",
-        padding: 30,
       },
     });
 
@@ -100,26 +97,42 @@ const GraphVisualization = ({ graphData }) => {
       <div className="graph-visualization-container" ref={containerRef} />
       <div className="legend">
         <h4>Legend</h4>
-        <div><strong>Nodes</strong></div>
+        <div>
+          <strong>Nodes</strong>
+        </div>
         <ul>
           <li>
-            <span className="legend-color" style={{ backgroundColor: "#0074D9" }}></span>
+            <span
+              className="legend-color"
+              style={{ backgroundColor: "#0074D9" }}
+            ></span>
             Company
           </li>
           <li>
-            <span className="legend-color" style={{ backgroundColor: "#FF4136" }}></span>
+            <span
+              className="legend-color"
+              style={{ backgroundColor: "#FF4136" }}
+            ></span>
             Financial Statement
           </li>
           <li>
-            <span className="legend-color" style={{ backgroundColor: "#2ECC40" }}></span>
+            <span
+              className="legend-color"
+              style={{ backgroundColor: "#2ECC40" }}
+            ></span>
             Financial Item
           </li>
           <li>
-            <span className="legend-color" style={{ backgroundColor: "#FF851B" }}></span>
+            <span
+              className="legend-color"
+              style={{ backgroundColor: "#FF851B" }}
+            ></span>
             Period
           </li>
         </ul>
-        <div><strong>Edges</strong></div>
+        <div>
+          <strong>Edges</strong>
+        </div>
         <ul>
           <li>
             <span className="legend-edge"></span>
