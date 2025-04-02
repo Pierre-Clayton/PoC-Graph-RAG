@@ -97,7 +97,7 @@ Graph Insights:
 Graph Metrics:
 {json.dumps(metrics, indent=2, ensure_ascii=False)}
 
-Provide a concise summary highlighting key findings such as important relationships, central nodes, and overall graph characteristics.
+Provide a detailed summary highlighting key findings such as important relationships, central nodes, and overall graph characteristics.
 """
     try:
         response = client.chat.completions.create(
