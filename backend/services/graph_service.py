@@ -124,31 +124,34 @@ You are an expert in financial data and knowledge graph extraction. Using the fo
 
 The graph must follow this schema:
 
-**Entities (Nodes):**  
-  - **Company** (e.g., BNP Paribas)  
-  - **FinancialStatement** (e.g., Balance Sheet)  
-  - **FinancialItem** (e.g., CashEquivalents, ShortTermInvestments, AccountsReceivable, Inventory, OtherCurrentAssets, TotalCurrentAssets, PropertyPlantEquipment, IntangibleAssets, OtherNonCurrentAssets, TotalNonCurrentAssets, TotalAssets, ShortTermDebt, AccountsPayable, OtherCurrentLiabilities, TotalCurrentLiabilities, LongTermDebt, DeferredTaxLiabilities, OtherNonCurrentLiabilities, TotalNonCurrentLiabilities, TotalLiabilities, CommonStock, RetainedEarnings, AdditionalPaidInCapital, OtherEquity, TotalEquity, TotalLiabilitiesAndEquity)  
+**Entities (Nodes):**
+  - **Company** (e.g., BNP Paribas)
+  - **FinancialStatement** (e.g., Balance Sheet)
+  - **FinancialItem** (e.g., CashEquivalents, ShortTermInvestments, AccountsReceivable, Inventory, OtherCurrentAssets, TotalCurrentAssets, PropertyPlantEquipment, IntangibleAssets, OtherNonCurrentAssets, TotalNonCurrentAssets, TotalAssets, ShortTermDebt, AccountsPayable, OtherCurrentLiabilities, TotalCurrentLiabilities, LongTermDebt, DeferredTaxLiabilities, OtherNonCurrentLiabilities, TotalNonCurrentLiabilities, TotalLiabilities, CommonStock, RetainedEarnings, AdditionalPaidInCapital, OtherEquity, TotalEquity, TotalLiabilitiesAndEquity)
   - **Period** (e.g., "Q1 2023", "Q2 2023", "Q3 2023", "Q4 2023", "Q1 2024", "Q2 2024", "Q3 2024", "Q4 2024")
 
-**Relationships (Edges):**  
-  - **(Company)-[:HAS_STATEMENT]->(FinancialStatement)**  
-  - **(FinancialStatement)-[:HAS_ITEM]->(FinancialItem)**  
-  - **(FinancialItem)-[:HAS_VALUE {{ period: "Q1 2024", value: 2500 }}]->(Period)**  
-  - Use **BREAKDOWN** relationships (without an explicit contribution property) to indicate which FinancialItems contribute to a total. For instance, *TotalCurrentAssets* is a sum of *CashEquivalents*, *ShortTermInvestments*, *AccountsReceivable*, *Inventory*, and *OtherCurrentAssets*.  
+**Relationships (Edges):**
+  - **(Company)-[:HAS_STATEMENT]->(FinancialStatement)**
+  - **(FinancialStatement)-[:HAS_ITEM]->(FinancialItem)**
+  - **(FinancialItem)-[:HAS_VALUE {{ period: "<Period>", value: <value> }}]->(Period)**
+
+For each FinancialItem, generate a separate HAS_VALUE relationship for each period available in the CSV data, linking the item to the corresponding Period node with the correct value from the CSV.
+
+  - Use **BREAKDOWN** relationships (without an explicit contribution property) to indicate which FinancialItems contribute to a total. For instance, *TotalCurrentAssets* is a sum of *CashEquivalents*, *ShortTermInvestments*, *AccountsReceivable*, *Inventory*, and *OtherCurrentAssets*.
   - Use **EQUATION** relationships (with a `role` property) to indicate how FinancialItems are calculated. For example, *TotalAssets* is the sum of *TotalCurrentAssets* and *TotalNonCurrentAssets*, and *TotalLiabilitiesAndEquity* is the sum of *TotalLiabilities* and *TotalEquity*.
 
-The JSON must have two keys: `"nodes"` and `"relationships"`.
+The JSON must have two keys: "nodes" and "relationships".
 
-For each node, include:  
-  - `"id"`: a unique identifier (e.g., "n1", "n2", …)  
-  - `"label"`: the node type (e.g., "Company", "FinancialStatement", "FinancialItem", "Period")  
-  - `"name"`: the value extracted from the CSV for that entity.
+For each node, include:
+  - "id": a unique identifier (e.g., "n1", "n2", …)
+  - "label": the node type (e.g., "Company", "FinancialStatement", "FinancialItem", "Period")
+  - "name": the value extracted from the CSV for that entity.
 
-For each relationship, include:  
-  - `"source"`: the id of the source node  
-  - `"target"`: the id of the target node  
-  - `"type"`: the relationship type (e.g., "HAS_STATEMENT", "HAS_ITEM", "HAS_VALUE", "BREAKDOWN", "EQUATION")  
-  - And include additional properties such as `"period"`, `"value"`, or `"role"` where applicable.
+For each relationship, include:
+  - "source": the id of the source node
+  - "target": the id of the target node
+  - "type": the relationship type (e.g., "HAS_STATEMENT", "HAS_ITEM", "HAS_VALUE", "BREAKDOWN", "EQUATION")
+  - And include additional properties such as "period", "value", or "role" where applicable.
 
 Here is the simulated CSV data representing the modified Balance Sheet with subtle fluctuations:
 {csv_text}
